@@ -1,0 +1,7 @@
+[package]
+name = "rustup_prompt_helper"
+version = "0.1.0"
+authors = ["János Illés <ijanos@gmail.com>"]
+
+[dependencies]
+toml = "0.2.1"
