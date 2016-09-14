@@ -22,7 +22,7 @@ fn read_settings() -> (String, BTreeMap<String, String>) {
     let default = value.get("default_toolchain").unwrap().as_str().unwrap();
     let overrides = value.get("overrides").unwrap().as_table().unwrap();
     let overrides = overrides.iter()
-        .map(|(k, v)| (k.to_string(), strip_toolchain(v.as_str().unwrap())))
+        .map(|(k, v)| (k.to_string(), v.as_str().unwrap().to_string()))
         .collect();
 
     (default.into(), overrides)
@@ -33,8 +33,8 @@ fn main() {
     let (default, overrides) = read_settings();
 
     let toolchain = match overrides.get(cwd.to_str().unwrap()) {
-        Some(toolchain) => toolchain,
-        None => &default,
+        Some(toolchain) => strip_toolchain(toolchain),
+        None => default,
     };
 
     println!("{}", toolchain);
