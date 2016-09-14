@@ -1,4 +1,4 @@
-# rust prompt helper
+# rustup prompt helper
 
 A small command line utility that prints the name of the selected rust
 toolchain for the current working directory. Intended to help
