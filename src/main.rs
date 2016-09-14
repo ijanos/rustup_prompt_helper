@@ -5,11 +5,11 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::collections::BTreeMap;
 
-fn strip_toolchain(name: &str) -> String {
-    name.split('-').nth(0).unwrap().to_string()
+fn strip_toolchain(name: &toml::Value) -> String {
+    name.as_str().unwrap().split('-').nth(0).unwrap().to_string()
 }
 
-fn read_settings() -> (String, BTreeMap<String, String>) {
+fn read_settings() -> (String, BTreeMap<String, toml::Value>) {
     let mut settings_path = env::home_dir().unwrap();
     settings_path.push(".multirust/settings.toml");
 
@@ -21,11 +21,8 @@ fn read_settings() -> (String, BTreeMap<String, String>) {
     let value = toml::Parser::new(&buffer).parse().unwrap();
     let default = value.get("default_toolchain").unwrap().as_str().unwrap();
     let overrides = value.get("overrides").unwrap().as_table().unwrap();
-    let overrides = overrides.iter()
-        .map(|(k, v)| (k.to_string(), v.as_str().unwrap().to_string()))
-        .collect();
 
-    (default.into(), overrides)
+    (default.to_owned(), overrides.to_owned())
 }
 
 fn main() {
