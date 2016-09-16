@@ -3,7 +3,13 @@
 A small command line utility that prints the name of the selected rust
 toolchain for the current working directory. Intended to help
 create informative command line prompts or scripts  where the
-alternative is piping the output of `rustup` command through `sed` and other tools.
+alternative is piping the output of `rustup` command through other tools.
+
+The output of `rustup_prompt_helper` should be identical to the following command, as of rustup version 0.6.3
+
+```
+rustup show | tail -n 3 | head -n 1 |  cut -d '-' -f 1
+```
 
 
 ## Example usage
