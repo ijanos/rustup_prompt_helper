@@ -19,8 +19,14 @@ fn read_settings() -> (String, BTreeMap<String, toml::Value>) {
     file.read_to_string(&mut buffer).expect("Error reading settings.toml");
 
     let value = toml::Parser::new(&buffer).parse().expect("Error parsing settings.toml");
-    let default = value.get("default_toolchain").expect("Did not found default_toolchain in settings.toml").as_str().unwrap();
-    let overrides = value.get("overrides").expect("Did not found overrides in settings.toml").as_table().unwrap();
+    let default = value.get("default_toolchain")
+        .expect("Did not found default_toolchain in settings.toml")
+        .as_str()
+        .unwrap();
+    let overrides = value.get("overrides")
+        .expect("Did not found overrides in settings.toml")
+        .as_table()
+        .unwrap();
 
     (default.to_owned(), overrides.to_owned())
 }
