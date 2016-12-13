@@ -11,7 +11,7 @@ fn strip_toolchain(name: &toml::Value) -> String {
 
 fn read_settings() -> (String, BTreeMap<String, toml::Value>) {
     let mut settings_path = env::home_dir().expect("Cannot get home directory");
-    settings_path.push(".multirust/settings.toml");
+    settings_path.push(".rustup/settings.toml");
 
     let mut file = File::open(&settings_path).expect("Error opening settings.toml file");
 
