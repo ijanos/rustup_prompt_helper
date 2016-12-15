@@ -5,42 +5,52 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::collections::BTreeMap;
 
-fn strip_toolchain(name: &toml::Value) -> String {
-    name.as_str().unwrap().split('-').nth(0).unwrap().to_string()
+fn strip_toolchain(name: &toml::Value) -> Option<&str> {
+    name.as_str().and_then(|n| n.split('-').nth(0))
 }
 
-fn read_settings() -> (String, BTreeMap<String, toml::Value>) {
-    let mut settings_path = env::home_dir().expect("Cannot get home directory");
+fn read_settings() -> Result<(String, BTreeMap<String, toml::Value>), String> {
+    let mut settings_path = try!(env::home_dir().ok_or("cannot get home directory"));
     settings_path.push(".rustup/settings.toml");
 
-    let mut file = File::open(&settings_path).expect("Error opening settings.toml file");
+    let mut file = try!(File::open(&settings_path).map_err(|_| "cannot open settings.toml file"));
 
     let mut buffer = String::new();
-    file.read_to_string(&mut buffer).expect("Error reading settings.toml");
+    try!(file.read_to_string(&mut buffer).map_err(|_| "cannot read settings.toml"));
 
-    let value = toml::Parser::new(&buffer).parse().expect("Error parsing settings.toml");
-    let default = value.get("default_toolchain")
-        .expect("Did not found default_toolchain in settings.toml")
-        .as_str()
-        .unwrap();
-    let overrides = value.get("overrides")
-        .expect("Did not found overrides in settings.toml")
-        .as_table()
-        .unwrap();
+    let value =
+        try!(toml::Parser::new(&buffer).parse().ok_or("cannot parse settings.toml as toml"));
+    let default = try!(value.get("default_toolchain")
+        .and_then(|d| d.as_str())
+        .ok_or("did not found default_toolchain in settings.toml"));
+    let overrides = try!(value.get("overrides")
+        .and_then(|t| t.as_table())
+        .ok_or("did not found overrides in settings.toml"));
 
-    (default.to_owned(), overrides.to_owned())
+    Ok((default.to_owned(), overrides.to_owned()))
+}
+
+fn get_toolchain() -> Result<String, String> {
+    let cwd = try!(env::current_dir().map_err(|_| "cannot get working directory"));
+    let cwd = try!(cwd.to_str().ok_or("cannot convert working directory to string"));
+    let (default, overrides) = try!(read_settings());
+
+    match overrides.get(cwd) {
+        Some(toolchain) => {
+            let toolchain = try!(strip_toolchain(toolchain).ok_or("Can not parse settings.toml"));
+            Ok(toolchain.to_owned())
+        }
+        None => Ok(default),
+    }
 }
 
 fn main() {
-    let cwd = env::current_dir().expect("Cannot get working directory");
-    let cwd = cwd.to_str().expect("Cannot convert working directory to string");
-    let (default, overrides) = read_settings();
-
-    let toolchain = if let Some(toolchain) = overrides.get(cwd) {
-        strip_toolchain(toolchain)
-    } else {
-        default
-    };
-
-    println!("{}", toolchain);
+    match get_toolchain() {
+        Ok(toolchain) => println!("{}", toolchain),
+        Err(message) => {
+            if env::args().len() > 1 {
+                println!("Error: {}", message);
+            }
+        }
+    }
 }
