@@ -7,7 +7,7 @@ command through other tools. While that approach is fine it is slower and if you
 have a busy prompt it can create a noticeable delay every time you press enter.
 
 The output of `rustup_prompt_helper` should be identical to the following
-command, as of rustup version 0.6.3
+command, as of rustup version 1.0.0
 
 ```
 rustup show | tail -n 3 | head -n 1 |  cut -d '-' -f 1
@@ -45,6 +45,17 @@ customized by creating a `.config/fish/functions/fish_prompt.fish` file.
 
 For a complete example see
 [my fish prompt config](https://github.com/ijanos/dotfiles/blob/master/fish/.config/fish/functions/fish_prompt.fish).
+
+## Handling errors
+
+All errors are silenced by default. If an error happens the program will simply
+exit without printing anything. While error silencing is generally not the
+greatest idea, this program's output should be printed directly into shell
+prompts and spilling a large error message into a prompt can cause all kinds of
+trouble.
+
+To see error messages simply pass any argument to the tool like `-debug` for
+example.
 
 ## License
 
