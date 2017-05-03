@@ -4,6 +4,7 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::collections::BTreeMap;
+use toml::Value;
 
 fn strip_toolchain(name: &toml::Value) -> Option<&str> {
     name.as_str().and_then(|n| n.split('-').nth(0))
@@ -19,7 +20,7 @@ fn read_settings() -> Result<(String, BTreeMap<String, toml::Value>), String> {
     try!(file.read_to_string(&mut buffer).map_err(|_| "cannot read settings.toml"));
 
     let value =
-        try!(toml::Parser::new(&buffer).parse().ok_or("cannot parse settings.toml as toml"));
+        try!((&buffer).parse::<Value>().map_err(|_| "cannot parse settings.toml as toml"));
     let default = try!(value.get("default_toolchain")
         .and_then(|d| d.as_str())
         .ok_or("did not found default_toolchain in settings.toml"));

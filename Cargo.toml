@@ -11,4 +11,4 @@ A small command line utility that prints the active rustup
 toolchain for the current working directory"""
 
 [dependencies]
-toml = "0.2"
+toml = "0.4"

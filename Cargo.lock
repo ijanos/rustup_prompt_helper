@@ -2,22 +2,22 @@
 name = "rustup_prompt_helper"
 version = "1.1.0"
 dependencies = [
- "toml 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "toml 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
-name = "rustc-serialize"
-version = "0.3.22"
+name = "serde"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "toml"
-version = "0.2.1"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "rustc-serialize 0.3.22 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [metadata]
-"checksum rustc-serialize 0.3.22 (registry+https://github.com/rust-lang/crates.io-index)" = "237546c689f20bb44980270c73c3b9edd0891c1be49cc1274406134a66d3957b"
-"checksum toml 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "736b60249cb25337bc196faa43ee12c705e426f3d55c214d73a4e7be06f92cb4"
+"checksum serde 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "3b46a59dd63931010fdb1d88538513f3279090d88b5c22ef4fe8440cfffcc6e3"
+"checksum toml 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "3063405db158de3dce8efad5fc89cf1baffb9501a3647dc9505ba109694ce31f"
